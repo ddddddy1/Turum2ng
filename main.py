@@ -77,7 +77,7 @@ def osta_aktsiaid():
 #mängu aken
 root = tk.Tk()
 root.title("TÜTT")
-root.geometry("600x400")
+root.geometry("1280x720")
 
 #Algne screen
 algscreen = tk.Frame(root)
@@ -103,34 +103,55 @@ algus_nupp = tk.Button(
 algus_nupp.pack(pady=20)
 # Main screen
 main_screen = tk.Frame(root)
-päeva_text = tk.Label(main_screen, text=f"Päev: {päev}", font=("Arial", 16))
-päeva_text.pack(anchor="ne",padx = 10, pady = 10)
-raha_kogus = tk.Label(main_screen, text=f"Raha: {raha}€", font=("Arial", 16))
-raha_kogus.pack(anchor="nw", padx = 10, pady = 10)
-#Pilt main screenil
+#Alumine bar
+alumine_bar = tk.Frame(
+    main_screen,
+    borderwidth=1,
+    relief="solid"
+    )
+alumine_bar.pack(side="bottom", fill="x")
+#Ülemine bar
+ülemine_bar = tk.Frame(
+    main_screen,
+    borderwidth=1,
+    relief="solid"
+    )
+ülemine_bar.pack(side = "top", fill="x")
+#päev ja raha
+päeva_text = tk.Label(ülemine_bar,
+    text=f"Päev: {päev}",
+    font=("Arial", 16)
+    )
+päeva_text.pack(side = "right",padx = 10)
+raha_kogus = tk.Label(ülemine_bar,
+    text=f"Raha: {raha}€",
+    font=("Arial", 16)
+    )
+raha_kogus.pack(side = "left", padx = 10)
+#Pilt ülemisel ribal
 image = Image.open("logo.png")
-image = image.resize((128, 128))
+image = image.resize((64, 64))
 logo_pilt = ImageTk.PhotoImage(image)
-logo = tk.Label(main_screen, image = logo_pilt)
-logo.pack(pady=20)
+logo = tk.Label(ülemine_bar, image = logo_pilt)
+logo.pack(anchor = "n")
 #Järgmise päeva nupp
 järgmine_päev = tk.Button(
-    main_screen,
+    alumine_bar,
     text = "Mine magama",
     font = ("Arial", 18),
     width = 15,
     height = 2,
     command = järgmine_päev
     )
-järgmine_päev.pack(anchor = "se", padx = 10, pady = 10)
+järgmine_päev.pack(side = "right", padx = 10)
 #Osta nupp
 osta_nupp = tk.Button(
-    main_screen,
-    text = "Osta",
+    alumine_bar,
+    text = "Osta aktsiaid",
     font = ("Arial", 18),
-    width = 20,
-    height = 20,
+    width = 15,
+    height = 2,
     command = osta_aktsiaid
     )
-osta_nupp.pack(anchor = "sw", padx = 10, pady = 10)
+osta_nupp.pack(side = "left", padx = 10)
 root.mainloop()
