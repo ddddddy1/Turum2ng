@@ -110,6 +110,11 @@ alumine_bar = tk.Frame(
     relief="solid"
     )
 alumine_bar.pack(side="bottom", fill="x")
+#Alumine vasak
+all_vasakul = tk.Frame(
+    alumine_bar
+)
+all_vasakul.pack(side="left", fill="x")
 #Ülemine bar
 ülemine_bar = tk.Frame(
     main_screen,
@@ -146,7 +151,7 @@ järgmine_päev = tk.Button(
 järgmine_päev.pack(side = "right", padx = 10)
 #Osta nupp
 osta_nupp = tk.Button(
-    alumine_bar,
+    all_vasakul,
     text = "Osta aktsiaid",
     font = ("Arial", 18),
     width = 15,
@@ -154,4 +159,13 @@ osta_nupp = tk.Button(
     command = osta_aktsiaid
     )
 osta_nupp.pack(side = "left", padx = 10)
+#Portfoolio nupp
+portfoolio_nupp = tk.Button(
+    all_vasakul,
+    text = "Vaata portfooliot",
+    font = ("Arial", 18),
+    width = 15,
+    height = 2,
+)
+portfoolio_nupp.pack(side = "right", padx = 10)
 root.mainloop()
