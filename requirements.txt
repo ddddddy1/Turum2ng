@@ -1,1 +1,4 @@
 Pillow
+
+*powershelli: *
+pip install -r requirements.txt
