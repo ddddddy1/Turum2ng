@@ -1,4 +1,4 @@
 Pillow
-
-*powershelli: *
-pip install -r requirements.txt
+matplotlib
+numpy
+tkinter

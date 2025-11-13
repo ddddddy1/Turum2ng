@@ -1,4 +1,6 @@
 import tkinter as tk
+#import matplotlib as plt
+#import numpy as np
 from PIL import Image, ImageTk
 import random
 
@@ -12,7 +14,7 @@ stocks = {
         "hind": 10,
     },
     
-    
+
 }
 
 #Portfolio
