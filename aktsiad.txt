@@ -1,0 +1,14 @@
+KÕM Arvutused;20.80
+Proge Enterprises;34.01
+Opsys Operations Co.;30.00
+AAR AS;16.10
+SE AS;49.03
+Pirogovi Pargitööd AS;67.67
+Rüütli Grupp;107.88
+Delta Kohvik Ltd.;19.45
+Möku Mökud;69.67
+Ujula Konsum;103.00
+Kivi Coop;32.09
+TÜ Ühismajutus;84.67
+AS MatStat;35.12
+Hess Kebab Toitlustus;20.89
