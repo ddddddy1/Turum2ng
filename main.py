@@ -9,20 +9,20 @@ päev = 1
 raha = 1000
 
 #Aktsiaturg
-stocks = {
-    "Test": {
-        "hind": 10,
-    },
-    
+#Muutujad: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "firmatüüp": "MC"}}
+stocks = {}
 
-}
-
-#Portfolio
-portfolio = {
-    
-    
-    
-}
+with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
+    for rida in fail:
+        jrj = rida.strip().split(";")
+        stocks[jrj[0]] = {"hind": float(jrj[1]),
+                          "TVL": int(jrj[2]),
+                          "muster": jrj[3],
+                          "firmatüüp": jrj[4]}
+        
+#Portfoolio
+#Muutujad: {"aktsia nimi": int(hulk)}
+portfolio = {}
 
 def algus():
     #hiljem graafika???
