@@ -1,14 +1,14 @@
-KÕM Arvutused;20.80
-Proge Enterprises;34.01
-Opsys Operations Co.;30.00
-AAR AS;16.10
-SE AS;49.03
-Pirogovi Pargitööd AS;67.67
-Rüütli Grupp;107.88
-Delta Kohvik Ltd.;19.45
-Möku Mökud;69.67
-Ujula Konsum;103.00
-Kivi Coop;32.09
-TÜ Ühismajutus;84.67
-AS MatStat;35.12
-Hess Kebab Toitlustus;20.89
+KÕM Arvutused;20.80;1;HNS;0;SMALL
+Proge Enterprises;34.01;1;HNS;0;MID
+Opsys Operations Co.;30.00;0;DBT;1;MID
+AAR AS;5.10;0;AST;1;PENNY
+SE AS;49.03;1;F;4;MID
+Pirogovi Pargitööd AS;67.67;1;F;0;LARGE
+Rüütli Grupp;107.88;0;DBB;0;LARGE
+Delta Kohvik Ltd.;4.45;1;CNH;1;PENNY
+Möku Mökud;69.67;1;W;1;LARGE
+Ujula Konsum;103.00;1;DST;3;LARGE
+Kivi Coop;32.09;0;DST;4;MID
+TÜ Ühismajutus;84.67;1;DBT;2;LARGE
+AS MatStat;16.12;1;DBT;1;SMALL
+Hess Kebab Toitlustus;20.89;1;DBT;3;SMALL
