@@ -9,7 +9,12 @@ päev = 1
 raha = 1000
 
 #Aktsiaturg
-#Muutujad: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "firmatüüp": "MC"}}
+#Muutujad: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "samm": 5, "firmatüüp": "MID"}}
+#Mustrid: (nädalad väärtustena alates 0-st, kõige kõrgem (HNS) väärtus on 5)
+#tõus + langus: HNS(6 nädalat), DBT(4 nädalat)
+#langus + tõus: CNH(4 nädalat), DBB(4 nädalat)
+#langus + langus: W(5 nädalat), DST(5 nädalat)
+#tõus + tõus: F(5 nädalat), AST(5 nädalat)
 stocks = {}
 
 with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
@@ -18,11 +23,16 @@ with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
         stocks[jrj[0]] = {"hind": float(jrj[1]),
                           "TVL": int(jrj[2]),
                           "muster": jrj[3],
-                          "firmatüüp": jrj[4]}
+                          "samm": int(jrj[4]),
+                          "firmatüüp": jrj[5]}
         
 #Portfoolio
 #Muutujad: {"aktsia nimi": int(hulk)}
 portfolio = {}
+
+def hinnamuutus(): #muudab iga aktsia hinda vastavalt mustrile, kasutab veidi RNG-d
+    for aktsia in stocks:
+    pass
 
 def algus():
     #hiljem graafika???
@@ -33,6 +43,7 @@ def järgmine_päev():
     global päev
     päev += 1
     päeva_text.config(text=f"Päev: {päev}")
+    hinnamuutus()
     update()
 def update(): #refreshib UI (päev, raha, aktsiaturg...)
     pass
