@@ -16,9 +16,10 @@ with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
     for rida in fail:
         jrj = rida.strip().split(";")
         stocks[jrj[0]] = {"hind": float(jrj[1]),
-                          "TVL": int(jrj[2]),
-                          "muster": jrj[3],
-                          "firmatüüp": jrj[4]}
+                          #"TVL": int(jrj[2]),
+                          #"muster": jrj[3],
+                          #"firmatüüp": jrj[4]
+                          }
         
 #Portfoolio
 #Muutujad: {"aktsia nimi": int(hulk)}
@@ -36,25 +37,32 @@ def järgmine_päev():
     update()
 def update(): #refreshib UI (päev, raha, aktsiaturg...)
     pass
+def show_main_screen():
+    # Puhastame ja taastame peamise sisu
+    for widget in root.winfo_children():
+        widget.pack_forget()
+    main_screen.pack(fill="both", expand=True)
+    # Võid lisada ka teisi nuppe või sisu vastavalt vajadusele
 def osta_aktsiaid():
-    osta_aken = tk.Toplevel(root)
-    osta_aken.title("Osta aktsiaid")
-    osta_aken.geometry("400x300")
-    
-    info_label = tk.Label(osta_aken, text="Vali aktsia ja sisesta kogus:")
+    main_screen.pack_forget()
+    info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
     info_label.pack(pady=10)
     
-    stock_var = tk.StringVar(osta_aken)
+    stock_var = tk.StringVar(root)
     stock_var.set(list(stocks.keys())[0])
     
-    stock_menu = tk.OptionMenu(osta_aken, stock_var, *stocks.keys())
+    stock_menu = tk.OptionMenu(root, stock_var, *stocks.keys())
     stock_menu.pack(pady=10)
     
-    quantity_label = tk.Label(osta_aken, text="Kogus:")
+    quantity_label = tk.Label(root, text="Kogus:")
     quantity_label.pack(pady=10)
     
-    quantity_entry = tk.Entry(osta_aken)
+    quantity_entry = tk.Entry(root)
     quantity_entry.pack(pady=10)
+    
+    viga_label = tk.Label(root, text="", fg="red")
+    viga_label.pack(pady=10)
+
     
     def osta():
         global raha
@@ -68,15 +76,33 @@ def osta_aktsiaid():
         else:
             raha -= kokku_hind
             raha_kogus.config(text=f"Raha: {raha}€")
-            portfolio[valitud_aktsia] = portfolio.get(valitud_aktsia, 0) + kogus
-            osta_aken.destroy()
+            portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
+            portfolio[valitud_aktsia]["Kogus"] += kogus
+            portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
+            viga_label.config(text="Ost edukas!", fg="green")
+
+            show_main_screen()
     
-    osta_nupp = tk.Button(osta_aken, text="Osta", command=osta)
+    osta_nupp = tk.Button(root, text="Osta", command=osta)
     osta_nupp.pack(pady=10)
+    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp.pack(pady=10)
+
+def vaata_portfooliot():
+    main_screen.pack_forget()
+    info_label = tk.Label(root, text="Sinu portfoolio:")
+    info_label.pack(pady=10)
     
-    viga_label = tk.Label(osta_aken, text="", fg="red")
-    viga_label.pack(pady=10)
+    for aktsia, info in portfolio.items():
+        kogus = info["Kogus"]
+        väärtus = info["Väärtus"]
+        aktsia_label = tk.Label(root, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€")
+        aktsia_label.pack()
+    
+    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp.pack(pady=10)
 #mängu aken
+
 root = tk.Tk()
 root.title("TÜTT")
 root.geometry("1280x720")
@@ -168,6 +194,7 @@ portfoolio_nupp = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
+    command = vaata_portfooliot,
 )
 portfoolio_nupp.pack(side = "right", padx = 10)
 root.mainloop()
