@@ -426,19 +426,22 @@ main_screen = tk.Frame(root)
 alumine_bar = tk.Frame(
     main_screen,
     borderwidth=1,
-    relief="solid"
+    relief="solid",
+    bg="#7E7B76"
     )
 alumine_bar.pack(side="bottom", fill="x")
 #Alumine vasak
 all_vasakul = tk.Frame(
-    alumine_bar
+    alumine_bar,
+    bg="#7E7B76"
 )
 all_vasakul.pack(side="left", fill="x")
 #Ülemine bar
 ülemine_bar = tk.Frame(
     main_screen,
     borderwidth=1,
-    relief="solid"
+    relief="solid",
+    bg="#7E7B76"
     )
 ülemine_bar.pack(side = "top", fill="x")
 #Keskmine ala
@@ -473,19 +476,21 @@ uuenda_listi()
 #nädal ja raha
 nädala_text = tk.Label(ülemine_bar,
     text=f"Nädal: {nädal}",
-    font=("Arial", 16)
+    font=("Arial", 16),
+    bg="#7E7B76"
     )
 nädala_text.pack(side = "right",padx = 10)
 raha_kogus = tk.Label(ülemine_bar,
     text=f"Raha: {raha}€",
-    font=("Arial", 16)
+    font=("Arial", 16),
+    bg="#7E7B76"
     )
 raha_kogus.pack(side = "left", padx = 10)
 #Pilt ülemisel ribal
 image = Image.open("logo.png")
 image = image.resize((64, 64))
 logo_pilt = ImageTk.PhotoImage(image)
-logo = tk.Label(ülemine_bar, image = logo_pilt)
+logo = tk.Label(ülemine_bar, image = logo_pilt, bg="#7E7B76")
 logo.pack(anchor = "n")
 #Järgmise nädala nupp
 järgmine_nädal = tk.Button(
@@ -494,7 +499,9 @@ järgmine_nädal = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
-    command = järgmine_nädal
+    command = järgmine_nädal,
+    bg = "#3A322E",
+    fg = "white"
     )
 järgmine_nädal.pack(side = "right", padx = 10)
 #Osta nupp
@@ -504,6 +511,8 @@ osta_nupp = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
+    bg = "#3A322E",
+    fg = "white",
     command = osta_aktsiaid
     )
 osta_nupp.pack(side = "left", padx = 10)
@@ -515,6 +524,8 @@ portfoolio_nupp = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
+    bg = "#3A322E",
+    fg = "white",
     command = vaata_portfooliot,
 )
 portfoolio_nupp.pack(side = "right", padx = 10)
@@ -525,6 +536,8 @@ müü_nupp = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
+    bg = "#3A322E",
+    fg = "white",
     command = müü_aktsiaid
 )
 müü_nupp.pack(side = "left", padx = 10)
