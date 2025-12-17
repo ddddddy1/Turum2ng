@@ -176,9 +176,21 @@ def arvuta_portfoolio_väärtus():
         väärtus += portfolio[el]["Väärtus"]
     return väärtus
 def müü_aktsiaid():
+    global taustapilt2_tk
     main_screen.pack_forget()
-    info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
-    info_label.pack(pady=10)
+    taustapilt2 = Image.open("ekraan.png").resize((1280, 720))
+    taustapilt2_tk = ImageTk.PhotoImage(taustapilt2)
+
+    kõik = tk.Canvas(root,
+                    width=1280,
+                    height=720,
+                    borderwidth=1,
+                    relief="solid")
+    kõik.pack(fill="both", expand=True)
+    kõik.create_image(0, 0, anchor='nw', image=taustapilt2_tk)
+
+    info_label = tk.Label(kõik, text="Vali aktsia ja sisesta kogus:", bg="black", fg="white")
+    info_label.pack(pady=(100, 0))
 
     protfoolio_var = tk.StringVar(root)
     try:
@@ -195,16 +207,16 @@ def müü_aktsiaid():
         okei_nupp.pack(pady=10)
         return
 
-    portfoolio_menu = tk.OptionMenu(root, protfoolio_var, *portfolio.keys())
+    portfoolio_menu = tk.OptionMenu(kõik, protfoolio_var, *portfolio.keys())
     portfoolio_menu.pack(pady=10)
-
-    kogus = tk.Label(root, text="Kogus:")
+    portfoolio_menu.config(bg="black", fg="white", activebackground="grey", activeforeground="white")
+    kogus = tk.Label(kõik, text="Kogus:", bg="black", fg="white")
     kogus.pack(pady=10)
 
-    koguse_sisestus = tk.Entry(root)
+    koguse_sisestus = tk.Entry(kõik)
     koguse_sisestus.pack(pady=10)
 
-    viga = tk.Label(root, text="", fg="red")
+    viga = tk.Label(kõik, text="",bg="black", fg="red")
     viga.pack(pady=10)
 
     def müü():
@@ -227,30 +239,41 @@ def müü_aktsiaid():
             alg_portfoolio_väärtus = arvuta_portfoolio_väärtus()
             show_main_screen()
 
-    müü_nupp = tk.Button(root, text="Müü", command=müü)
+    müü_nupp = tk.Button(kõik,bg="black", fg="white", text="Müü", command=müü)
     müü_nupp.pack(pady=10)
 
-    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp = tk.Button(kõik, text="Tagasi",bg="black",fg="white", command=show_main_screen)
     tagasi_nupp.pack(pady=10)
 
 def osta_aktsiaid():
+    global taustapilt2_tk
     main_screen.pack_forget()
-    info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
-    info_label.pack(pady=10)
+    taustapilt2 = Image.open("ekraan.png").resize((1280, 720))
+    taustapilt2_tk = ImageTk.PhotoImage(taustapilt2)
+    kõik = tk.Canvas(root,
+                    width=1280,
+                    height=720,
+                    borderwidth=1,
+                    relief="solid")
+    kõik.pack(fill="both", expand=True)
+    kõik.create_image(0, 0, anchor='nw', image=taustapilt2_tk)
+
+    info_label = tk.Label(kõik, text="Vali aktsia ja sisesta kogus:", bg="black", fg="white")
+    info_label.pack(pady=(100, 0))
     
-    aktsia_var = tk.StringVar(root)
+    aktsia_var = tk.StringVar(kõik)
     aktsia_var.set(list(stocks.keys())[0])
     
-    menu = tk.OptionMenu(root, aktsia_var, *stocks.keys())
+    menu = tk.OptionMenu(kõik, aktsia_var, *stocks.keys())
     menu.pack(pady=10)
-    
-    kogus = tk.Label(root, text="Kogus:")
+    menu.config(bg="black", fg="white", activebackground="grey", activeforeground="white")
+    kogus = tk.Label(kõik, text="Kogus:", bg="black", fg="white")
     kogus.pack(pady=10)
     
-    koguse_sisestus = tk.Entry(root)
+    koguse_sisestus = tk.Entry(kõik)
     koguse_sisestus.pack(pady=10)
     
-    viga = tk.Label(root, text="", fg="red")
+    viga = tk.Label(kõik, text="",bg="black", fg="red")
     viga.pack(pady=10)
 
     
@@ -275,15 +298,25 @@ def osta_aktsiaid():
             alg_portfoolio_väärtus = arvuta_portfoolio_väärtus()
             show_main_screen()
     
-    osta_nupp = tk.Button(root, text="Osta", command=osta)
+    osta_nupp = tk.Button(kõik, text="Osta",bg="black", fg="white", command=osta)
     osta_nupp.pack(pady=10)
-    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp = tk.Button(kõik, text="Tagasi",bg="black", fg="white", command=show_main_screen)
     tagasi_nupp.pack(pady=10)
 
 def vaata_portfooliot():
+    global taustapilt2_tk
     main_screen.pack_forget()
-    info_label = tk.Label(root, text="Sinu portfoolio:")
-    info_label.pack(pady=10)
+    taustapilt2 = Image.open("ekraan.png").resize((1280, 720))
+    taustapilt2_tk = ImageTk.PhotoImage(taustapilt2)
+    kõik = tk.Canvas(root, 
+                    width=1280,
+                    height=720,
+                    borderwidth=1,
+                    relief="solid")
+    kõik.pack(fill="both", expand=True)
+    kõik.create_image(0, 0, anchor='nw', image=taustapilt2_tk)
+    info_label = tk.Label(kõik, text="Sinu portfoolio:", bg="black", fg="white")
+    info_label.pack(pady=(100, 0))
     
     for aktsia, info in portfolio.items():
         kogus = info["Kogus"]
@@ -293,10 +326,10 @@ def vaata_portfooliot():
             muut = f"{abs(muut)}% \u2193"
         elif muut > 0:
             muut = f"{muut}% \u2191"
-        aktsia_label = tk.Label(root, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€, Muutus: {muut}")
+        aktsia_label = tk.Label(kõik, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€, Muutus: {muut}", bg="black", fg="white")
         aktsia_label.pack()
     
-    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp = tk.Button(kõik, text="Tagasi", command=show_main_screen, bg = "black", fg = "white")
     tagasi_nupp.pack(pady=10)
 
 protsendid = {
@@ -420,7 +453,6 @@ keskmine_ala = tk.Canvas(
 )
 keskmine_ala.pack(fill="both", expand=True)
 keskmine_ala.create_image(0, 0, anchor='nw', image=taustapilt_tk)
-#Keskmise ala sisu
 #Portfoolio väärtus
 portfoolio_väärtus_label = tk.Label(
     keskmine_ala,
