@@ -269,7 +269,11 @@ järgminemuster = {
     "F":   ["F", "AST", "HNS", "DBT"],
     "AST": ["F", "AST", "HNS", "DBT"],
     "W":   ["W", "DST", "CNH", "DBB"],
-    "DST": ["W", "DST", "CNH", "DBB"]
+    "DST": ["W", "DST", "CNH", "DBB"],
+    "EX1": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX1_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"]
 }
     
 #mängu aken
