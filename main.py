@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import random
 
 #Muutujad
-päev = 1
+nädal = 1
 raha = 1000
 
 #Aktsiaturg
@@ -31,22 +31,47 @@ def algus():
     algscreen.pack_forget()
     main_screen.pack(fill="both", expand = True)
     
-def järgmine_päev():
-    global päev
-    päev += 1
-    päeva_text.config(text=f"Päev: {päev}")
-    update()
+def järgmine_nädal():
+    global nädal
+    nädal += 1
+    nädala_text.config(text=f"Nädal: {nädal}")
+    hinnamuutus(stocks)
+    uuenda_listi()
     
-def update(): #refreshib UI (päev, raha, aktsiaturg...)
-    pass
-
 def show_main_screen():
-    # Puhastame ja taastame peamise sisu
+    # eemaldame kõik vidinad
     for widget in root.winfo_children():
         widget.pack_forget()
     main_screen.pack(fill="both", expand=True)
-    # Võid lisada ka teisi nuppe või sisu vastavalt vajadusele
-    
+    uuenda_listi()
+#uuendame main sreeni aktsiate listi
+def uuenda_listi():
+    global stocks
+    for widget in veerg1.winfo_children():
+        widget.destroy()
+    for widget in veerg2.winfo_children():
+        widget.destroy()
+    #jagame ja kirjutame aktsiad kahte veergu
+    i = 0
+    for el in stocks:
+        if i % 2 == 0:
+            veerg = veerg1
+        else:
+            veerg = veerg2
+        nimi = stocks[el]
+        hind = nimi["hind"]
+        kastike = tk.Label(
+            veerg,
+            borderwidth=1,
+            relief="solid",
+            bg = "black",
+            fg= "white",
+            height=4,
+            width=25,
+            text=f"{el}: {hind}€"
+        )
+        kastike.pack(pady=(16, 0))
+        i += 1
 def samm_protsendiks(firmatüüp: str, samm):
     if samm == 2:
         return 0.0
@@ -112,7 +137,9 @@ def hinnamuutus(aktsiad):
             tvl = 1
         else:
             tvl = 0
-        
+        if el in portfolio:
+            portfolio[el]["Väärtus"] = round(portfolio[el]["Kogus"] * uushind, 2)
+            portfolio[el]["Protsent"] = protsent
         nimi["hind"] = uushind
         nimi["TVL"] = tvl
         nimi["muster"] = muster
@@ -152,7 +179,9 @@ def osta_aktsiaid():
         else:
             raha -= kokku_hind
             raha_kogus.config(text=f"Raha: {raha}€")
-            portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
+            if valitud_aktsia not in portfolio:
+                portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
+                portfolio[valitud_aktsia]["Protsent"] = 0
             portfolio[valitud_aktsia]["Kogus"] += kogus
             portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
             viga_label.config(text="Ost edukas!", fg="green")
@@ -172,7 +201,12 @@ def vaata_portfooliot():
     for aktsia, info in portfolio.items():
         kogus = info["Kogus"]
         väärtus = info["Väärtus"]
-        aktsia_label = tk.Label(root, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€")
+        muut = info["Protsent"]
+        if muut <= 0:
+            muut = f"{abs(muut)}% \u2193"
+        elif muut > 0:
+            muut = f"{muut}% \u2191"
+        aktsia_label = tk.Label(root, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€, Muutus: {muut}")
         aktsia_label.pack()
     
     tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
@@ -230,7 +264,11 @@ järgminemuster = {
     "F":   ["F", "AST", "HNS", "DBT"],
     "AST": ["F", "AST", "HNS", "DBT"],
     "W":   ["W", "DST", "CNH", "DBB"],
-    "DST": ["W", "DST", "CNH", "DBB"]
+    "DST": ["W", "DST", "CNH", "DBB"],
+    "EX1": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX1_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"]
 }
     
 #mängu aken
@@ -282,12 +320,32 @@ all_vasakul.pack(side="left", fill="x")
     relief="solid"
     )
 ülemine_bar.pack(side = "top", fill="x")
-#päev ja raha
-päeva_text = tk.Label(ülemine_bar,
-    text=f"Päev: {päev}",
+#Keskmine ala
+taustapilt = Image.open("TYTT_taust.png").resize((1280, 600))
+taustapilt_tk = ImageTk.PhotoImage(taustapilt)
+keskmine_ala = tk.Canvas(
+    main_screen,
+    width=1280,
+    height=600,
+    borderwidth=1,
+    relief="solid"
+)
+keskmine_ala.pack(fill="both", expand=True)
+keskmine_ala.create_image(0, 0, anchor='nw', image=taustapilt_tk)
+#Keskmise ala sisu
+# Esimene veerg
+veerg1 = tk.Label(keskmine_ala, bg="#3A322E")
+veerg1.pack(side='left', anchor='n', padx=24, pady=5)
+# Teine veerg
+veerg2 = tk.Label(keskmine_ala, bg="#3A322E")
+veerg2.pack(side='left', anchor='n', padx=5, pady=5)
+uuenda_listi()
+#nädal ja raha
+nädala_text = tk.Label(ülemine_bar,
+    text=f"Nädal: {nädal}",
     font=("Arial", 16)
     )
-päeva_text.pack(side = "right",padx = 10)
+nädala_text.pack(side = "right",padx = 10)
 raha_kogus = tk.Label(ülemine_bar,
     text=f"Raha: {raha}€",
     font=("Arial", 16)
@@ -299,16 +357,16 @@ image = image.resize((64, 64))
 logo_pilt = ImageTk.PhotoImage(image)
 logo = tk.Label(ülemine_bar, image = logo_pilt)
 logo.pack(anchor = "n")
-#Järgmise päeva nupp
-järgmine_päev = tk.Button(
+#Järgmise nädala nupp
+järgmine_nädal = tk.Button(
     alumine_bar,
     text = "Mine magama",
     font = ("Arial", 18),
     width = 15,
     height = 2,
-    command = järgmine_päev
+    command = järgmine_nädal
     )
-järgmine_päev.pack(side = "right", padx = 10)
+järgmine_nädal.pack(side = "right", padx = 10)
 #Osta nupp
 osta_nupp = tk.Button(
     all_vasakul,
