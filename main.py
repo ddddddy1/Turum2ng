@@ -281,6 +281,7 @@ järgminemuster = {
 root = tk.Tk()
 root.title("TÜTT")
 root.geometry("1280x720")
+root.resizable(False, False)
 
 #Algne screen
 algscreen = tk.Frame(root)
