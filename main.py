@@ -7,6 +7,7 @@ import random
 #Muutujad
 nädal = 1
 raha = 1000
+net_worth = 0
 
 #Aktsiaturg
 #Nt: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "samm": 5, "firmatüüp": "MID"}}
@@ -19,7 +20,8 @@ with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
                           "TVL": int(jrj[2]),
                           "muster": jrj[3],
                           "samm": int(jrj[4]),
-                          "firmatüüp": jrj[5]}
+                          "firmatüüp": jrj[5],
+                          "protsent": 0}
         
 #Portfoolio
 #Muutujad: {"aktsia nimi": int(hulk)}
@@ -58,6 +60,13 @@ def uuenda_listi():
             veerg = veerg1
         else:
             veerg = veerg2
+        #kas roheline / punane / valge
+        if stocks[el]["protsent"] < 0:
+            värv = "red"
+        elif stocks[el]["protsent"] > 0:
+            värv = "green"
+        else:
+            värv = "white"
         nimi = stocks[el]
         hind = nimi["hind"]
         kastike = tk.Label(
@@ -65,13 +74,14 @@ def uuenda_listi():
             borderwidth=1,
             relief="solid",
             bg = "#1A1A1A",
-            fg= "white",
+            fg = värv,
             height=4,
             width=25,
             text=f"{el}: {hind}€"
         )
         kastike.pack(pady=(16, 0))
         i += 1
+    portfoolio_väärtus_label.config(text=f"{round(arvuta_portfoolio_väärtus(), 2)}€")
 def samm_protsendiks(firmatüüp: str, samm):
     if samm == 2:
         return 0.0
@@ -121,6 +131,7 @@ def hinnamuutus(aktsiad):
         muster = nimi["muster"]
         samm = nimi["samm"]
         firmatüüp = nimi["firmatüüp"]
+        protsent = nimi["protsent"]
         
         extrm = ekstreemne(firmatüüp)
         if extrm != None:
@@ -139,7 +150,8 @@ def hinnamuutus(aktsiad):
             tvl = 0
         if el in portfolio:
             portfolio[el]["Väärtus"] = round(portfolio[el]["Kogus"] * uushind, 2)
-            portfolio[el]["Protsent"] = protsent
+            portfolio[el]["protsent"] = protsent
+        nimi["protsent"] = protsent
         nimi["hind"] = uushind
         nimi["TVL"] = tvl
         nimi["muster"] = muster
@@ -186,7 +198,7 @@ def osta_aktsiaid():
             raha_kogus.config(text=f"Raha: {raha}€")
             if valitud_aktsia not in portfolio:
                 portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
-                portfolio[valitud_aktsia]["Protsent"] = 0
+                portfolio[valitud_aktsia]["protsent"] = 0
             portfolio[valitud_aktsia]["Kogus"] += kogus
             portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
             viga_label.config(text="Ost edukas!", fg="green")
@@ -205,8 +217,8 @@ def vaata_portfooliot():
     
     for aktsia, info in portfolio.items():
         kogus = info["Kogus"]
-        väärtus = info["Väärtus"]
-        muut = info["Protsent"]
+        väärtus = round(info["Väärtus"], 2)
+        muut = info["protsent"]
         if muut <= 0:
             muut = f"{abs(muut)}% \u2193"
         elif muut > 0:
@@ -269,7 +281,11 @@ järgminemuster = {
     "F":   ["F", "AST", "HNS", "DBT"],
     "AST": ["F", "AST", "HNS", "DBT"],
     "W":   ["W", "DST", "CNH", "DBB"],
-    "DST": ["W", "DST", "CNH", "DBB"]
+    "DST": ["W", "DST", "CNH", "DBB"],
+    "EX1": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX1_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"],
+    "EX2_LITE": ["HNS", "DBT", "CNH", "DBB", "F", "AST", "W", "DST"]
 }
     
 #mängu aken
@@ -277,6 +293,7 @@ järgminemuster = {
 root = tk.Tk()
 root.title("TÜTT")
 root.geometry("1280x720")
+root.resizable(False, False)
 
 #Algne screen
 algscreen = tk.Frame(root)
@@ -337,7 +354,7 @@ keskmine_ala.create_image(0, 0, anchor='nw', image=taustapilt_tk)
 #Portfoolio väärtus
 portfoolio_väärtus_label = tk.Label(
     keskmine_ala,
-    text=f"Portfoolio väärtus: {arvuta_portfoolio_väärtus()}€",
+    text=f"Portfoolio väärtus: {net_worth}€",
     bg="#1A1A1A",
     fg="white",
     width=21,
