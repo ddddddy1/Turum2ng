@@ -9,12 +9,7 @@ päev = 1
 raha = 1000
 
 #Aktsiaturg
-#Muutujad: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "samm": 5, "firmatüüp": "MID"}}
-#Mustrid: (nädalad väärtustena alates 0-st, kõige kõrgem (HNS) väärtus on 5)
-#tõus + langus: HNS(6 nädalat), DBT(4 nädalat)
-#langus + tõus: CNH(4 nädalat), DBB(4 nädalat)
-#langus + langus: W(5 nädalat), DST(5 nädalat)
-#tõus + tõus: F(5 nädalat), AST(5 nädalat)
+#Nt: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "samm": 5, "firmatüüp": "MID"}}
 stocks = {}
 
 with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
@@ -30,42 +25,120 @@ with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
 #Muutujad: {"aktsia nimi": int(hulk)}
 portfolio = {}
 
-def hinnamuutus(): #muudab iga aktsia hinda vastavalt mustrile, kasutab veidi RNG-d
-    for aktsia in stocks:
-    pass
-
 def algus():
     #hiljem graafika???
     print("TÜTT - Juhan & Tormi")
     algscreen.pack_forget()
     main_screen.pack(fill="both", expand = True)
+    
 def järgmine_päev():
     global päev
     päev += 1
     päeva_text.config(text=f"Päev: {päev}")
-    hinnamuutus()
     update()
+    
 def update(): #refreshib UI (päev, raha, aktsiaturg...)
     pass
-def osta_aktsiaid():
-    osta_aken = tk.Toplevel(root)
-    osta_aken.title("Osta aktsiaid")
-    osta_aken.geometry("400x300")
+
+def show_main_screen():
+    # Puhastame ja taastame peamise sisu
+    for widget in root.winfo_children():
+        widget.pack_forget()
+    main_screen.pack(fill="both", expand=True)
+    # Võid lisada ka teisi nuppe või sisu vastavalt vajadusele
     
-    info_label = tk.Label(osta_aken, text="Vali aktsia ja sisesta kogus:")
+def samm_protsendiks(firmatüüp: str, samm):
+    if samm == 2:
+        return 0.0
+    
+    tvl, ekstreem = samm
+    l, h = protsendid[firmatüüp][ekstreem]
+    protsent = random.randint(l, h)
+    return protsent if tvl == 1 else -protsent
+    
+def ekstreemne(firmatüüp):
+    if firmatüüp == "LARGE":
+        rand = random.randint(1, 500)
+    elif firmatüüp == "MID":
+        rand = random.randint(1, 200)
+    elif firmatüüp == "SMALL":
+        rand = random.randint(1, 100)
+    elif firmatüüp == "PENNY":
+        rand = random.randint(1, 33)
+    if rand == 17:
+        rand_ex = random.randint(1, 4)
+        if rand_ex == 1:
+            return "EX1"
+        elif rand_ex == 2:
+            return "EX1_LITE"
+        elif rand_ex == 3:
+            return "EX2"
+        elif rand_ex == 4:
+            return "EX2_LITE"
+    else:
+        return None
+    
+def leiainfo(muster, samm):
+    max_samm = mustripikkus.get(muster)
+
+    if samm >= max_samm:
+        samm = 0
+        muster = random.choice(järgminemuster[muster])
+    else:
+        samm += 1
+    return muster, samm
+
+def hinnamuutus(aktsiad):
+    for el in aktsiad:
+        nimi = aktsiad[el]
+        hind = nimi["hind"]
+        tvl = nimi["TVL"]
+        muster = nimi["muster"]
+        samm = nimi["samm"]
+        firmatüüp = nimi["firmatüüp"]
+        
+        extrm = ekstreemne(firmatüüp)
+        if extrm != None:
+            muster = extrm
+            samm = 0
+        
+        muster, samm = leiainfo(muster, samm)
+            
+        mustri_samm = mustrid[muster][samm]
+        protsent = samm_protsendiks(firmatüüp, mustri_samm)
+        uushind = round(hind * (1 + protsent / 100), 2)
+        
+        if uushind >= hind:
+            tvl = 1
+        else:
+            tvl = 0
+        
+        nimi["hind"] = uushind
+        nimi["TVL"] = tvl
+        nimi["muster"] = muster
+        nimi["samm"] = samm
+            
+    return aktsiad
+def osta_aktsiaid():
+    main_screen.pack_forget()
+    info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
     info_label.pack(pady=10)
     
-    stock_var = tk.StringVar(osta_aken)
+    stock_var = tk.StringVar(root)
     stock_var.set(list(stocks.keys())[0])
     
-    stock_menu = tk.OptionMenu(osta_aken, stock_var, *stocks.keys())
+    stock_menu = tk.OptionMenu(root, stock_var, *stocks.keys())
     stock_menu.pack(pady=10)
     
-    quantity_label = tk.Label(osta_aken, text="Kogus:")
+    quantity_label = tk.Label(root, text="Kogus:")
     quantity_label.pack(pady=10)
     
-    quantity_entry = tk.Entry(osta_aken)
+    quantity_entry = tk.Entry(root)
     quantity_entry.pack(pady=10)
+    
+    viga_label = tk.Label(root, text="", fg="red")
+    viga_label.pack(pady=10)
+
     
     def osta():
         global raha
@@ -79,15 +152,89 @@ def osta_aktsiaid():
         else:
             raha -= kokku_hind
             raha_kogus.config(text=f"Raha: {raha}€")
-            portfolio[valitud_aktsia] = portfolio.get(valitud_aktsia, 0) + kogus
-            osta_aken.destroy()
+            portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
+            portfolio[valitud_aktsia]["Kogus"] += kogus
+            portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
+            viga_label.config(text="Ost edukas!", fg="green")
+
+            show_main_screen()
     
-    osta_nupp = tk.Button(osta_aken, text="Osta", command=osta)
+    osta_nupp = tk.Button(root, text="Osta", command=osta)
     osta_nupp.pack(pady=10)
+    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp.pack(pady=10)
+
+def vaata_portfooliot():
+    main_screen.pack_forget()
+    info_label = tk.Label(root, text="Sinu portfoolio:")
+    info_label.pack(pady=10)
     
-    viga_label = tk.Label(osta_aken, text="", fg="red")
-    viga_label.pack(pady=10)
+    for aktsia, info in portfolio.items():
+        kogus = info["Kogus"]
+        väärtus = info["Väärtus"]
+        aktsia_label = tk.Label(root, text=f"{aktsia}: Kogus: {kogus}, Väärtus: {väärtus}€")
+        aktsia_label.pack()
+    
+    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp.pack(pady=10)
+
+protsendid = {
+"LARGE": [(1, 4), (5, 10)],
+"MID": [(2, 6), (7, 15)],
+"SMALL": [(3, 10), (10, 20)],
+"PENNY": [(20, 50), (50, 60)]
+}
+
+#[(TVL/jääb samaks(2), väike/suur muutus)]
+mustrid = {
+#Tõus + langus
+"HNS": [(1, 0), (0, 0), (1, 1), (0, 1), (1, 0), (0, 0)], #6 nädalat
+"DBT": [(1, 1), (0, 0), (1, 0), (0, 1)], #4 nädalat
+#Langus + tõus - 4 nädalat
+"CNH": [(0, 1), 2, (1, 1), (0, 0)],
+"DBB": [(0, 1), (1, 0), (0, 0), (1, 1)],
+#Tõus + tõus - 5 nädalat
+"F": [(1, 1), (0, 0), (1, 0), (0, 0), (1, 1)],
+"AST": [(1, 1), (0, 0), (1, 0), (0, 0), (1, 0)],
+#Langus + langus - 5 nädalat
+"W": [(0, 1), (1, 0), (0, 0), (1, 0), 2],
+"DST": [(0, 1), (1, 0), (0, 0), 2, 2],
+#Ekstreemne tõus + langus (+laugem) - 2 nädalat
+"EX1": [(1, 1), (0, 1)],
+"EX1_LITE": [(1, 1), (0, 0)],
+#Ekstreemne langus + tõus (+laugem) - 2 nädalat
+"EX2": [(0, 1), (1, 1)],
+"EX2_LITE": [(0, 1), (1, 0)]
+}
+
+mustripikkus = {
+    "HNS": 5,
+    "DBT": 3,
+    "CNH": 3,
+    "DBB": 3,
+    "F":   4,
+    "AST": 4,
+    "W":   4,
+    "DST": 4,
+    "EX1": 1,
+    "EX1_LITE": 1,
+    "EX2": 1,
+    "EX2_LITE": 1,
+}
+
+järgminemuster = {
+    "HNS": ["CNH", "DBB", "W", "DST"],
+    "DBT": ["CNH", "DBB", "W", "DST"],
+    "CNH": ["HNS", "DBT", "F", "AST"],
+    "DBB": ["HNS", "DBT", "F", "AST"],
+    "F":   ["F", "AST", "HNS", "DBT"],
+    "AST": ["F", "AST", "HNS", "DBT"],
+    "W":   ["W", "DST", "CNH", "DBB"],
+    "DST": ["W", "DST", "CNH", "DBB"]
+}
+    
 #mängu aken
+
 root = tk.Tk()
 root.title("TÜTT")
 root.geometry("1280x720")
@@ -179,6 +326,7 @@ portfoolio_nupp = tk.Button(
     font = ("Arial", 18),
     width = 15,
     height = 2,
+    command = vaata_portfooliot,
 )
 portfoolio_nupp.pack(side = "right", padx = 10)
 root.mainloop()
