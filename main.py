@@ -175,45 +175,103 @@ def arvuta_portfoolio_väärtus():
     for el in portfolio:
         väärtus += portfolio[el]["Väärtus"]
     return väärtus
+def müü_aktsiaid():
+    main_screen.pack_forget()
+    info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
+    info_label.pack(pady=10)
+
+    protfoolio_var = tk.StringVar(root)
+    try:
+        protfoolio_var.set(list(portfolio.keys())[0])
+    except IndexError:
+        show_main_screen()
+        #error popup
+        viga_popup = tk.Toplevel(root)
+        viga_popup.title("Viga")
+        viga_label = tk.Label(viga_popup, text="Sul pole müüdavaid aktsiaid!", anchor="center")
+        viga_label.pack(pady=20, padx=20)
+        #okei nupp
+        okei_nupp = tk.Button(viga_popup, text=":(", command=viga_popup.destroy)
+        okei_nupp.pack(pady=10)
+        return
+
+    portfoolio_menu = tk.OptionMenu(root, protfoolio_var, *portfolio.keys())
+    portfoolio_menu.pack(pady=10)
+
+    kogus = tk.Label(root, text="Kogus:")
+    kogus.pack(pady=10)
+
+    koguse_sisestus = tk.Entry(root)
+    koguse_sisestus.pack(pady=10)
+
+    viga = tk.Label(root, text="", fg="red")
+    viga.pack(pady=10)
+
+    def müü():
+        global raha, alg_portfoolio_väärtus
+        valitud_aktsia = protfoolio_var.get()
+        kogus = int(koguse_sisestus.get())
+        hind = stocks[valitud_aktsia]["hind"]
+        kokku_hind = hind * kogus
+
+        if valitud_aktsia not in portfolio or kogus > portfolio[valitud_aktsia]["Kogus"]:
+            viga.config(text="Sul pole piisavalt aktsiaid!")
+        else:
+            raha += kokku_hind
+            raha_kogus.config(text=f"Raha: {round(raha, 2)}€")
+            portfolio[valitud_aktsia]["Kogus"] -= kogus
+            portfolio[valitud_aktsia]["Väärtus"] -= kokku_hind
+            viga.config(text="Müük edukas!", fg="green")
+            if portfolio[valitud_aktsia]["Kogus"] == 0:
+                del portfolio[valitud_aktsia]
+            alg_portfoolio_väärtus = arvuta_portfoolio_väärtus()
+            show_main_screen()
+
+    müü_nupp = tk.Button(root, text="Müü", command=müü)
+    müü_nupp.pack(pady=10)
+
+    tagasi_nupp = tk.Button(root, text="Tagasi", command=show_main_screen)
+    tagasi_nupp.pack(pady=10)
+
 def osta_aktsiaid():
     main_screen.pack_forget()
     info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
     info_label.pack(pady=10)
     
-    stock_var = tk.StringVar(root)
-    stock_var.set(list(stocks.keys())[0])
+    aktsia_var = tk.StringVar(root)
+    aktsia_var.set(list(stocks.keys())[0])
     
-    stock_menu = tk.OptionMenu(root, stock_var, *stocks.keys())
-    stock_menu.pack(pady=10)
+    menu = tk.OptionMenu(root, aktsia_var, *stocks.keys())
+    menu.pack(pady=10)
     
-    quantity_label = tk.Label(root, text="Kogus:")
-    quantity_label.pack(pady=10)
+    kogus = tk.Label(root, text="Kogus:")
+    kogus.pack(pady=10)
     
-    quantity_entry = tk.Entry(root)
-    quantity_entry.pack(pady=10)
+    koguse_sisestus = tk.Entry(root)
+    koguse_sisestus.pack(pady=10)
     
-    viga_label = tk.Label(root, text="", fg="red")
-    viga_label.pack(pady=10)
+    viga = tk.Label(root, text="", fg="red")
+    viga.pack(pady=10)
 
     
     def osta():
         global raha, alg_portfoolio_väärtus
-        valitud_aktsia = stock_var.get()
-        kogus = int(quantity_entry.get())
+        valitud_aktsia = aktsia_var.get()
+        kogus = int(koguse_sisestus.get())
         hind = stocks[valitud_aktsia]["hind"]
         kokku_hind = hind * kogus
         
         if kokku_hind > raha:
-            viga_label.config(text="Sul pole piisavalt raha!")
+            viga.config(text="Sul pole piisavalt raha!")
         else:
             raha -= kokku_hind
-            raha_kogus.config(text=f"Raha: {raha}€")
+            raha_kogus.config(text=f"Raha: {round(raha, 2)}€")
             if valitud_aktsia not in portfolio:
                 portfolio[valitud_aktsia] = {"Kogus": 0, "Väärtus": 0}
                 portfolio[valitud_aktsia]["protsent"] = 0
             portfolio[valitud_aktsia]["Kogus"] += kogus
             portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
-            viga_label.config(text="Ost edukas!", fg="green")
+            viga.config(text="Ost edukas!", fg="green")
             alg_portfoolio_väärtus = arvuta_portfoolio_väärtus()
             show_main_screen()
     
@@ -418,6 +476,7 @@ osta_nupp = tk.Button(
     )
 osta_nupp.pack(side = "left", padx = 10)
 #Portfoolio nupp
+
 portfoolio_nupp = tk.Button(
     all_vasakul,
     text = "Vaata portfooliot",
@@ -427,4 +486,14 @@ portfoolio_nupp = tk.Button(
     command = vaata_portfooliot,
 )
 portfoolio_nupp.pack(side = "right", padx = 10)
+# Müü nupp
+müü_nupp = tk.Button(
+    all_vasakul,
+    text = "Müü aktsiaid",
+    font = ("Arial", 18),
+    width = 15,
+    height = 2,
+    command = müü_aktsiaid
+)
+müü_nupp.pack(side = "left", padx = 10)
 root.mainloop()
