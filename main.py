@@ -64,7 +64,7 @@ def uuenda_listi():
             veerg,
             borderwidth=1,
             relief="solid",
-            bg = "black",
+            bg = "#1A1A1A",
             fg= "white",
             height=4,
             width=25,
@@ -146,6 +146,11 @@ def hinnamuutus(aktsiad):
         nimi["samm"] = samm
             
     return aktsiad
+def arvuta_portfoolio_väärtus():
+    väärtus = 0
+    for el in portfolio:
+        väärtus += portfolio[el]["Väärtus"]
+    return väärtus
 def osta_aktsiaid():
     main_screen.pack_forget()
     info_label = tk.Label(root, text="Vali aktsia ja sisesta kogus:")
@@ -329,6 +334,16 @@ keskmine_ala = tk.Canvas(
 keskmine_ala.pack(fill="both", expand=True)
 keskmine_ala.create_image(0, 0, anchor='nw', image=taustapilt_tk)
 #Keskmise ala sisu
+#Portfoolio väärtus
+portfoolio_väärtus_label = tk.Label(
+    keskmine_ala,
+    text=f"Portfoolio väärtus: {arvuta_portfoolio_väärtus()}€",
+    bg="#1A1A1A",
+    fg="white",
+    width=21,
+    height=4,
+)
+portfoolio_väärtus_label.pack(side='right', anchor='se', padx=20, pady=185) 
 # Esimene veerg
 veerg1 = tk.Label(keskmine_ala, bg="#3A322E")
 veerg1.pack(side='left', anchor='n', padx=24, pady=5)
