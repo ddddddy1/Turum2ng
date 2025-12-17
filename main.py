@@ -8,6 +8,7 @@ import random
 nädal = 1
 raha = 1000
 net_worth = 0
+alg_portfoolio_väärtus = 0
 
 #Aktsiaturg
 #Nt: {"aktsia nimi": {"hind": 00.00, "TVL": 0, "muster": "HNS", "samm": 5, "firmatüüp": "MID"}}
@@ -48,11 +49,28 @@ def show_main_screen():
     uuenda_listi()
 #uuendame main sreeni aktsiate listi
 def uuenda_listi():
-    global stocks
+    def vali_värv(esimene, teine):
+        if esimene < teine:
+            return "green"
+        elif esimene > teine:
+            return "red"
+        else:
+            return "white"
+    global stocks, alg_portfoolio_väärtus
     for widget in veerg1.winfo_children():
         widget.destroy()
     for widget in veerg2.winfo_children():
         widget.destroy()
+    #portfoolio väärtus nali
+    portfoolio_väärtus_label.config(
+    text=f"Portfoolio väärtus: {round(arvuta_portfoolio_väärtus(), 2)}€"
+    )
+
+    # võrdlus + värvimine
+    uus_väärtus = arvuta_portfoolio_väärtus()
+    portfoolio_väärtus_label.config(text=f"Portfoolio väärtus: {round(uus_väärtus, 2)}€")
+    värv = vali_värv(alg_portfoolio_väärtus, uus_väärtus)
+    portfoolio_väärtus_label.config(fg=värv)
     #jagame ja kirjutame aktsiad kahte veergu
     i = 0
     for el in stocks:
@@ -60,13 +78,7 @@ def uuenda_listi():
             veerg = veerg1
         else:
             veerg = veerg2
-        #kas roheline / punane / valge
-        if stocks[el]["protsent"] < 0:
-            värv = "red"
-        elif stocks[el]["protsent"] > 0:
-            värv = "green"
-        else:
-            värv = "white"
+        värv = vali_värv(0, stocks[el]["protsent"])
         nimi = stocks[el]
         hind = nimi["hind"]
         kastike = tk.Label(
@@ -185,7 +197,7 @@ def osta_aktsiaid():
 
     
     def osta():
-        global raha
+        global raha, alg_portfoolio_väärtus
         valitud_aktsia = stock_var.get()
         kogus = int(quantity_entry.get())
         hind = stocks[valitud_aktsia]["hind"]
@@ -202,7 +214,7 @@ def osta_aktsiaid():
             portfolio[valitud_aktsia]["Kogus"] += kogus
             portfolio[valitud_aktsia]["Väärtus"] += kokku_hind
             viga_label.config(text="Ost edukas!", fg="green")
-
+            alg_portfoolio_väärtus = arvuta_portfoolio_väärtus()
             show_main_screen()
     
     osta_nupp = tk.Button(root, text="Osta", command=osta)
