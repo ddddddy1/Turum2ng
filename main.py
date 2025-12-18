@@ -360,7 +360,7 @@ mustrid = {
 "EX2": [(0, 1), (1, 1)],
 "EX2_LITE": [(0, 1), (1, 0)],
 #Lihtsalt tõus
-"T6US": [(1,0), (1,0)],
+"T6US": [(1,1)],
 "T6US_LITE": [(1,0)]
 }
 
@@ -377,7 +377,7 @@ mustripikkus = {
     "EX1_LITE": 1,
     "EX2": 1,
     "EX2_LITE": 1,
-    "T6US": 1,
+    "T6US": 0,
     "T6US_LITE": 0
 }
 
