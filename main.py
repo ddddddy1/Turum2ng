@@ -1,3 +1,9 @@
+#TÜTT - Tartu Ülikooli Tudengi Turg
+#Autorid: Juhan Simm, Tormi Arne Raidvere
+#Mäng, mis simuleerib vähendatud ja lihtsustatud kujul aktsiaturgu.
+#Mängu temaatika põhineb TÜ informaatika tudengile tuttavatel kohtadel ja õppeainetel.
+#Kasutatud allikad: aktsiate tavalisemad muuttüübid/mustrid, firmade väärtuspõhised tüübid, w3schools (Tkinter), copilot ja mõõdukas koguses AI'd.
+
 import tkinter as tk
 #import matplotlib as plt
 #import numpy as np
@@ -78,7 +84,8 @@ def samm_protsendiks(firmatüüp: str, samm):
     l, h = protsendid[firmatüüp][ekstreem]
     protsent = random.randint(l, h)
     return protsent if tvl == 1 else -protsent
-    
+
+#Leiab võimaluse, et ekstreemne muutus hinnas juhtub
 def ekstreemne(firmatüüp):
     if firmatüüp == "LARGE":
         rand = random.randint(1, 500)
@@ -332,6 +339,8 @@ with open("aktsiad.txt", "r", encoding = "UTF-8") as fail:
 #Muutujad: {"aktsia nimi": int(hulk)}
 portfolio = {}
 
+#Mitu protsenti iga firmatüüpi aktsia hind tõuseb
+#[(alampiir, ülempiir), (suur_alampiir, suur_ülempiir)]
 protsendid = {
 "LARGE": [(1, 4), (5, 10)],
 "MID": [(2, 6), (7, 15)],
@@ -339,9 +348,9 @@ protsendid = {
 "PENNY": [(20, 50), (50, 60)]
 }
 
-#[(TVL/jääb samaks(2), väike/suur muutus)]
+#Formaat: [(TVL/jääb samaks(2), väike/suur muutus)]
 mustrid = {
-#Tõus + langus
+#Tõus + langus (algab tõusuga, lõppeb langusega)
 "HNS": [(1, 0), (0, 0), (1, 1), (0, 1), (1, 0), (0, 0)], #6 nädalat
 "DBT": [(1, 1), (0, 0), (1, 0), (0, 1)], #4 nädalat
 #Langus + tõus - 4 nädalat
@@ -359,11 +368,12 @@ mustrid = {
 #Ekstreemne langus + tõus (+laugem) - 2 nädalat
 "EX2": [(0, 1), (1, 1)],
 "EX2_LITE": [(0, 1), (1, 0)],
-#Lihtsalt tõus
+#Lihtsalt tõus - 1 nädal
 "T6US": [(1,1)],
 "T6US_LITE": [(1,0)]
 }
 
+#Mitu nädalat kestab muster (5 = 6 nädalat, 0 = 1 nädal)
 mustripikkus = {
     "HNS": 5,
     "DBT": 3,
@@ -381,6 +391,7 @@ mustripikkus = {
     "T6US_LITE": 0
 }
 
+#Järgmine muster, ehk igale olemasolevale mustrile mustrid, mis võivad järgneda
 järgminemuster = {
     "HNS": ["CNH", "DBB", "W", "DST", "T6US", "T6US_LITE"],
     "DBT": ["CNH", "DBB", "W", "DST", "T6US", "T6US_LITE"],
