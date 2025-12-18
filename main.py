@@ -5,13 +5,10 @@
 #Kasutatud allikad: aktsiate tavalisemad muuttüübid/mustrid, firmade väärtuspõhised tüübid, w3schools (Tkinter), copilot ja mõõdukas koguses AI'd (kiirem kui Google Stack Overflow lahenduste leidmisel).
 
 import tkinter as tk
-#import matplotlib as plt
-#import numpy as np
 from PIL import Image, ImageTk
 import random
 
 def algus():
-    #hiljem graafika???
     print("TÜTT - Juhan & Tormi")
     algscreen.pack_forget()
     main_screen.pack(fill="both", expand = True)
