@@ -2,7 +2,7 @@
 #Autorid: Juhan Simm, Tormi Arne Raidvere
 #Mäng, mis simuleerib vähendatud ja lihtsustatud kujul aktsiaturgu.
 #Mängu temaatika põhineb TÜ informaatika tudengile tuttavatel kohtadel ja õppeainetel.
-#Kasutatud allikad: aktsiate tavalisemad muuttüübid/mustrid, firmade väärtuspõhised tüübid, w3schools (Tkinter), copilot ja mõõdukas koguses AI'd.
+#Kasutatud allikad: aktsiate tavalisemad muuttüübid/mustrid, firmade väärtuspõhised tüübid, w3schools (Tkinter), copilot ja mõõdukas koguses AI'd (kiirem kui Google Stack Overflow lahenduste leidmisel).
 
 import tkinter as tk
 #import matplotlib as plt
